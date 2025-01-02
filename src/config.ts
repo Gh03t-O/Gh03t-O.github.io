@@ -2,31 +2,31 @@ import type { Site, SocialObjects } from "./types";
 
 export const SITE: Site = {
   website: "https://gh03t-o.github.io/", // replace this with your deployed domain
-  author: "Sat Naing",
-  profile: "https://satnaing.dev/",
-  desc: "A minimal, responsive and SEO-friendly Astro blog theme.",
-  title: "AstroPaper",
-  ogImage: "astropaper-og.jpg",
+  author: "Gh03T",
+  profile: "https://gh03t-o.github.io/",
+  desc: "Java安全、反序列化、云安全、CTF(荒废)",
+  title: "Gh03t's blog",
+  ogImage: "astropaper-og.jpg", //修改OG图像
   lightAndDarkMode: true,
   postPerIndex: 4,
-  postPerPage: 3,
+  postPerPage: 5,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
   showArchives: true,
   editPost: {
-    url: "https://github.com/satnaing/astro-paper/edit/main/src/content/blog",
+    url: "https://github.com/Gh03t-O/Gh03t-O.github.io/tree/main/src/content/blog",
     text: "Suggest Changes",
     appendFilePath: true,
   },
 };
 
 export const LOCALE = {
-  lang: "en", // html lang code. Set this empty and default will be "en"
-  langTag: ["en-EN"], // BCP 47 Language Tags. Set this empty [] to use the environment default
+  lang: "zh", // html lang code. Set this empty and default will be "en"
+  langTag: ["zh-CN"], // BCP 47 Language Tags. Set this empty [] to use the environment default
 } as const;
 
 export const LOGO_IMAGE = {
-  enable: false,
-  svg: true,
+  enable: false, //为true需要在/public/assets目录下指定logo.png或logo.svg
+  svg: true, // png这里改成false
   width: 216,
   height: 46,
 };
@@ -34,31 +34,31 @@ export const LOGO_IMAGE = {
 export const SOCIALS: SocialObjects = [
   {
     name: "Github",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: ` ${SITE.title} on Github`,
+    href: "https://github.com/Gh03t-O",
+    linkTitle: `${SITE.title} on Github`,
     active: true,
   },
   {
     name: "Facebook",
     href: "https://github.com/satnaing/astro-paper",
     linkTitle: `${SITE.title} on Facebook`,
-    active: true,
+    active: false,
   },
   {
     name: "Instagram",
     href: "https://github.com/satnaing/astro-paper",
     linkTitle: `${SITE.title} on Instagram`,
-    active: true,
+    active: false,
   },
   {
     name: "LinkedIn",
     href: "https://github.com/satnaing/astro-paper",
     linkTitle: `${SITE.title} on LinkedIn`,
-    active: true,
+    active: false,
   },
   {
     name: "Mail",
-    href: "mailto:yourmail@gmail.com",
+    href: "gh03t_o",
     linkTitle: `Send an email to ${SITE.title}`,
     active: false,
   },
