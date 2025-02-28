@@ -54,4 +54,4 @@ CC需要关注Transformer类的transform方法，整个过程中对transform方�
 
     ChainedTransformer里边包含的是一个Transformer数组，它的transform就是用前一个（第一个除外）transformer的transform方法作为下一个调用的参数
 
-test
+test2
