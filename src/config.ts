@@ -6,7 +6,7 @@ export const SITE: Site = {
   profile: "https://gh03t-o.github.io/",
   desc: "Java安全、反序列化、云安全、CTF(荒废)",
   title: "Gh03t's blog",
-  ogImage: "astropaper-og.jpg", //修改OG图像
+  ogImage: "og.jpg", //修改OG图像
   lightAndDarkMode: true,
   postPerIndex: 4,
   postPerPage: 5,
@@ -58,9 +58,9 @@ export const SOCIALS: SocialObjects = [
   },
   {
     name: "Mail",
-    href: "gh03t_o",
+    href: "gh03t_o@163.com",
     linkTitle: `Send an email to ${SITE.title}`,
-    active: false,
+    active: true,
   },
   {
     name: "X",

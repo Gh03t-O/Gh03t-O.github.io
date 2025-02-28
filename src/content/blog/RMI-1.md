@@ -16,7 +16,7 @@ description: RMI
 
 写的有点垃圾 可以看下边连接了解RMI通信原理等动态调试流程
 
-{% embed url="https://xz.aliyun.com/t/8644" %}
+[https://xz.aliyun.com/t/8644]
 
 通信原理这篇博客有个点要注意一下，他太偏原理了，并没有介绍代码中哪一块是可以被利用的
 
@@ -24,13 +24,13 @@ description: RMI
 
 下边这篇了解攻击（因为博客时间久远，针对于高版本攻击可能不是那么全面）
 
-{% embed url="https://xz.aliyun.com/t/7930" %}
+[https://xz.aliyun.com/t/7930]
 
 RMI的原理不多赘述（Skeleton，stub等之类）
 
-{% embed url="https://www.w3cschool.cn/article/30445887.html" %}
+[https://www.w3cschool.cn/article/30445887.html]
 
-{% embed url="https://xz.aliyun.com/t/9261" %}
+[https://xz.aliyun.com/t/9261]
 
 这里主要说一下他整个的架构
 
@@ -108,7 +108,7 @@ public class Client {
 
 客户端和注册中心通信是使用的Naming类，先观察一下Naming中有什么方法
 
-<figure><img src="../.gitbook/assets/图片 (1).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/1.png)
 
 尝试一下哪些方法是客户端可以调用并且会和注册中心交互的
 
@@ -161,7 +161,7 @@ public String[] list() throws AccessException, RemoteException {
 
 有一个很有意思的点在于他在异常处理的时候
 
-<figure><img src="../.gitbook/assets/图片 (2).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/2.png)
 
 如果returnType是ExceptionalReturn的话，也会进行一次反序列化
 
@@ -443,7 +443,7 @@ case TransportConstants.ExceptionalReturn:
 
 在上文中也说了，客户端会把序列化数据写进输出流，所以服务端会进行读取，我们先开写进去的序列化数据是什么
 
-<figure><img src="../.gitbook/assets/图片 (3).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/3.png)
 
 调试进去是能看到是我们的参数，那看一下服务端反序列化数据在什么地方
 
@@ -497,7 +497,7 @@ yso的JRMP就是利用的这个
 
 
 
-{% embed url="https://www.apiref.com/java11-zh/java.rmi/java/rmi/dgc/DGC.html" %}
+[https://www.apiref.com/java11-zh/java.rmi/java/rmi/dgc/DGC.html]
 
 
 

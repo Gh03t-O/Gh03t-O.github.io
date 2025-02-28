@@ -15,7 +15,7 @@ description: RMI
 
 通信过程，代码动态调试博客推荐
 
-{% embed url="https://xz.aliyun.com/t/8644" %}
+[https://xz.aliyun.com/t/8644]
 
 对于高版本的RMI的分析，我们主要看低版本中哪个位置代码修改了，看怎么绕过这个位置
 
@@ -156,11 +156,11 @@ if (method == null) {
 
 在这个师傅这看到的
 
-{% embed url="https://pwnull.github.io/2022/Exploring-JAVA-RMI's-offensive-and-defensive-history/#3-3-%E7%BB%95%E8%BF%872%EF%BC%9A%E7%BB%95%E8%BF%87%E6%9C%AC%E5%9C%B0%E5%9C%B0%E5%9D%80%E9%99%90%E5%88%B6%EF%BC%88CVE-2019-2684%EF%BC%89" %}
+[https://pwnull.github.io/2022/Exploring-JAVA-RMI's-offensive-and-defensive-history/#3-3-%E7%BB%95%E8%BF%872%EF%BC%9A%E7%BB%95%E8%BF%87%E6%9C%AC%E5%9C%B0%E5%9C%B0%E5%9D%80%E9%99%90%E5%88%B6%EF%BC%88CVE-2019-2684%EF%BC%89]
 
 工具
 
-{% embed url="https://github.com/Afant1/RemoteObjectInvocationHandler" %}
+[https://github.com/Afant1/RemoteObjectInvocationHandler]
 
 ### 攻击DGC
 

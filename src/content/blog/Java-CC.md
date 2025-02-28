@@ -15,12 +15,7 @@ description: CC1,CC6,CC3,CC5,CC7,CC2,CC4,利用链全总结
 
 ## CC总结
 
-了解CC之前建议从URLDNS的链子开始，简短
-
-
-
-因为更多的是总结复现，所以大部分是正推。
-
+了解CC之前建议从URLDNS的链子开始，更加简短
 个人对Java反序列化利用链构造的一些理解：
 
 * 链子包含起始点，目的点，和中间过程(好像污点分析)
@@ -28,11 +23,14 @@ description: CC1,CC6,CC3,CC5,CC7,CC2,CC4,利用链全总结
 * 首先找到目的点（即可以RCE的地方），然后找那个位置可以调用这个点
 * 一点点的向上追，直接找到readObject
 
-<pre class="language-java"><code class="lang-java">import static Ser.Serial.serialize;
+```java
+import static Ser.Serial.serialize;
 import static Ser.UnSerial.deserialize;
-<strong>// 这两部分代码放到最后了
-</strong><strong>// 从ysoserial抄的
-</strong></code></pre>
+// 这两部分代码放到最后了
+// 从ysoserial抄的
+```
+
+
 
 
 
@@ -54,37 +52,33 @@ CC版本：3.2.1
 
 关于CC需要关注transform方法，整个过程中对transform方法的调用是重点
 
-1.  ```
+1.  ```java
     InvokerTransformer的Transform
     ```
 
-    <figure><img src="../.gitbook/assets/图片 (24).png" alt=""><figcaption></figcaption></figure>
+    ![](../../assets/gitbook/assets/24.png)
 
     关于反射的知识点就不做讲解了，执行input对象的iMethodName方法
-2.  ```
+2.  ```java
     ConstantTransformer
     ```
 
-    \
     返回iConstant
 
-    <figure><img src="../.gitbook/assets/图片 (25).png" alt=""><figcaption></figcaption></figure>
+    ![](../../assets/gitbook/assets/25.png)
 
     这个iConstant是ConstantTransformer初始化时传入的\
 
 
-    <figure><img src="../.gitbook/assets/图片 (26).png" alt=""><figcaption></figcaption></figure>
+    ![](../../assets/gitbook/assets/26.png)
 
 
 3.  ```
     ChainedTransformer
     ```
 
-    \
-    \
 
-
-    <figure><img src="../.gitbook/assets/图片 (27).png" alt=""><figcaption></figcaption></figure>
+    ![](../../assets/gitbook/assets/27.png)
 
     ChainedTransformer里边包含的是一个Transformer数组，它的transform就是用前一个（第一个除外）transformer的transform方法作为下一个调用的参数
 
@@ -118,19 +112,19 @@ public class main {
 
 ##### Transformer修饰Map
 
-<figure><img src="../.gitbook/assets/图片 (30).png" alt=""><figcaption><p>Transformer</p></figcaption></figure>
+![](../../assets/gitbook/assets/30.png)
 
 首先看一下Transformer接口，里边包含了transform方法，CC1或者说关于Transform的链子的其中一个重点就是某个方法触发了transform（至于为什么，可以看下边的transform介绍）
 
 IDEA FindUsage（因为是复现，所以直接看CC的map包中的调用）
 
-<figure><img src="../.gitbook/assets/图片 (31).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/31.png)
 
 首先关注TransformedMap，LazyMap和DefaultedMap下文再聊
 
 TransformedMap的transformKey和transformValue的调用都是在decorate或者map进行put时进行调用的，和这条链子关系不大，主要看checkSetValue
 
-<figure><img src="../.gitbook/assets/图片 (19).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/19.png)
 
 可以看到checkSetValue是直接调用了valueTransformer的transform，那么现在有两个问题；
 
@@ -141,7 +135,7 @@ TransformedMap的transformKey和transformValue的调用都是在decorate或者ma
 
 查看整个类可以发现，赋值的地方在构造函数中，可是构造函数是protected状态，那就需要找到谁调用了构造函数或者使用反射调用，类中decorate对构造函数进行了调用
 
-<figure><img src="../.gitbook/assets/图片 (20).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/20.png)
 
 类中还有一个public对构造函数进行了调用，但是哪个类会提前调用，修改payload，报错
 
@@ -150,16 +144,14 @@ TransformedMap的transformKey和transformValue的调用都是在decorate或者ma
 #### 调用checkSetValue
 
 checkSetValue也是一个protected，但是我们找到了MapEntry调用了checkSetValue，它和TransformedMap是同一个父类，可以调用checkSetValue
-
-<figure><img src="../.gitbook/assets/图片 (21).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/21.png)
 
 下一步就是寻找谁调用类MapEntry的setValue，或者谁调用了AbstractMaoEntryDecorator的setValue
 
 在AnnotationInvocationHandler的readObject中发现了对Map.Entry对setValue调用
 
 AbstractMaoEntryDecorator就是实现了
-
-<figure><img src="../.gitbook/assets/图片 (22).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/22.png)
 
 到这CC1的TransformedMap版本算是结束了
 
@@ -209,11 +201,11 @@ public class CC1TransformedMap {
 
 和探索TransformedMap一样，我们探索一下LazyMap，同样是从这张图片开始
 
-<figure><img src="../.gitbook/assets/图片 (31).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/31.png)
 
 map中不包含需要get的key就可以调用transform，同样我们需要解决两个问题，谁调用了get和赋值factory
 
-<figure><img src="../.gitbook/assets/图片 (28).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/28.png)
 
 赋值和上一个版本一样，使用decorate，不多赘述
 
@@ -229,7 +221,7 @@ map中不包含需要get的key就可以调用transform，同样我们需要解�
 
 而其中就有
 
-<figure><img src="../.gitbook/assets/图片 (29).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/29.png)
 
 memberValues.get就是我们构造的LazyMap
 
@@ -315,15 +307,15 @@ HashMap#readObject-Hashcode ->
 
 完整代码不放了，在readObject最后的putVal会调用hash(key)，里边会调用key.hashCode()
 
-<figure><img src="../.gitbook/assets/图片 (13).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/13.png)
 
-<figure><img src="../.gitbook/assets/图片 (14).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/14.png)
 
 所以给hashMap赋值为TiedMapEntry从而调用TiedMapEntry#hashCode()，这样会调用getValue()里边就有map.get
 
-<figure><img src="../.gitbook/assets/图片 (15).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/15.png)
 
-<figure><img src="../.gitbook/assets/图片 (16).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/16.png)
 
 所以TiedMapEntry的map变量放入构造好的LazyMap
 
@@ -331,10 +323,8 @@ HashMap#readObject-Hashcode ->
 
 基本上就完成了整个链子，但是有一个问题，LazyMap的get调用transform前会判断当前key存不存在，不存在才能调用，如果我们正常将TiedMapEntry的map变量放入构造好的LazyMap，map.put的时候会把key压入LazyMap，解决方法也很简单，直接remove掉
 
-<figure><img src="../.gitbook/assets/图片 (17).png" alt=""><figcaption></figcaption></figure>
-
-<figure><img src="../.gitbook/assets/图片 (18).png" alt=""><figcaption></figcaption></figure>
-
+![](../../assets/gitbook/assets/17.png)
+![](../../assets/gitbook/assets/18.png)
 在map.put中也会对TiedMapEntry进行hash操作，从而造成一次代码的执行，可以通过操作解决，但是我觉得问题不是很大（可以put之前把factory的Lazymap换掉，put之后在通过反射改掉）
 
 
@@ -402,11 +392,11 @@ CC3主要是更改的后半部分的Transformer部分，因为黑名单的引入
 
 可以看ClassLoader部分知识
 
-{% embed url="https://www.baeldung.com/java-classloaders" %}
+[https://www.baeldung.com/java-classloaders]
 
 中文可以看JavaSec
 
-{% embed url="https://www.javasec.org/" %}
+[https://www.javasec.org/]
 
 CC3使用另一个类调用任意方法
 
@@ -424,21 +414,18 @@ TemplatesImpl类进行defineClass 来加载字节码，从而加载任意类
 
 因为会调用transform，所以从这部分开始看
 
-<figure><img src="../.gitbook/assets/图片 (6).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/6.png)
 
 这里有一个新的Transformer，他的transform方法是使用反射创建一个对象
 
-<figure><img src="../.gitbook/assets/图片 (7).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/7.png)
 
 到这里我们知道他创建了一个对象，按照上文来说，看看TrAXFilter这个怎么利用，按照FastJson的链子来看，不做文字介绍了，只贴代码
 
-<figure><img src="../.gitbook/assets/图片 (8).png" alt=""><figcaption></figcaption></figure>
-
-<figure><img src="../.gitbook/assets/图片 (10).png" alt=""><figcaption></figcaption></figure>
-
-<figure><img src="../.gitbook/assets/图片 (11).png" alt=""><figcaption></figcaption></figure>
-
-<figure><img src="../.gitbook/assets/图片 (12).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/8.png)
+![](../../assets/gitbook/assets/9.png)
+![](../../assets/gitbook/assets/10.png)
+![](../../assets/gitbook/assets/11.png)
 
 前半部分只要使用能出发transform都都可以包括CC1的两个和CC6 这就是三条（需要注意 CC6 这一块要改一下，因为这里如果提前执行payload会报错，要改成不会提前执行的）
 
@@ -558,7 +545,7 @@ BadAttributeValueExpException类的readObject作为开始，TiedMapEntry.toStrin
 
 valObj其实就是val变量，具体原因等我写readObject解读
 
-<figure><img src="../.gitbook/assets/图片 (5).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/5.png)
 
 也就是BadAttributeValueExpException.val = CC6的TiedMapEntry
 
@@ -622,21 +609,22 @@ Hashtable.readObject - > Hashtable.reconstitutionPut - > AbstractMap.equals - > 
 
 
 
-<pre class="language-java"><code class="lang-java"><strong>// AbstractMap.equals
-</strong><strong>public boolean equals(Object o) {
-</strong>    if (o == this)
+```java
+// AbstractMap.equals
+public boolean equals(Object o) {
+    if (o == this)
         return true;
 
     if (!(o instanceof Map))
         return false;
-    Map&#x3C;?,?> m = (Map&#x3C;?,?>) o;
+    Map<?,?> m = (Map<?,?>) o;
     if (m.size() != size())
         return false;
 
     try {
-        Iterator&#x3C;Entry&#x3C;K,V>> i = entrySet().iterator();
+        Iterator<Entry<K,V>> i = entrySet().iterator();
         while (i.hasNext()) {
-            Entry&#x3C;K,V> e = i.next();
+            Entry<K,V> e = i.next();
             K key = e.getKey();
             V value = e.getValue();
             if (value == null) {
@@ -655,9 +643,9 @@ Hashtable.readObject - > Hashtable.reconstitutionPut - > AbstractMap.equals - > 
 
     return true;
 }
-</code></pre>
+```
 
-<figure><img src="../.gitbook/assets/图片 (4).png" alt=""><figcaption></figcaption></figure>
+![](../../assets/gitbook/assets/4.png)
 
 key = LazyMap
 
@@ -699,7 +687,7 @@ private void readObject(java.io.ObjectInputStream s)
 
 具体的分析过程就不嫌丑了
 
-{% embed url="https://infernity.top/2024/04/18/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-CC7%E9%93%BE/" %}
+[https://infernity.top/2024/04/18/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-CC7%E9%93%BE/]
 
 ### CC2
 
@@ -788,13 +776,13 @@ private void siftDownUsingComparator(int k, E x) {
     queue[k] = x;
 }//size 至少=2
 ```
-
+```
 到这里就算是可以了，问题是可以给comparator赋值为一个TransformingComparator吗
 
-<pre class="language-java"><code class="lang-java"><strong>PriorityQueue:private final Comparator&#x3C;? super E> comparator;
-</strong><strong>
-</strong>public class TransformingComparator&#x3C;I, O> implements Comparator&#x3C;I>, Serializable
-</code></pre>
+PriorityQueue:private final Comparator<? super E> comparator;
+
+public class TransformingComparator<I, O> implements Comparator<I>, Serializable
+```
 
 ```
 TransformingComparator的父类类型，可以赋值给comparator
@@ -810,9 +798,9 @@ public int compare(I obj1, I obj2) {
 
 到这里链子就通了，让
 
-<pre class="language-java"><code class="lang-java"><strong>PriorityQueue:Comparator = TransformingComparator
-</strong><strong>TransformingComparator:transformer = ChainedTransformer
-</strong></code></pre>
+PriorityQueue:Comparator = TransformingComparator
+TransformingComparator:transformer = ChainedTransformer
+
 
 进行构建
 
