@@ -1,4 +1,17 @@
-# RMI攻击可能利用到的点总结
+---
+pubDatetime: 2025-01-02T13:05:09Z
+modDatetime: 2025-01-02T13:10:31Z
+title: RMI攻击可能利用到的点总结
+featured: true
+draft: false
+tags:
+  - Java
+  - 反序列化
+  - RMI
+description: RMI
+---
+
+## Table of contents
 
 首先是一些工具的收集整理，后面会一点点的去调试学习
 

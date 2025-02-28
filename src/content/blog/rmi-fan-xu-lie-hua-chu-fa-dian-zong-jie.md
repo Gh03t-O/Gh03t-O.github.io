@@ -1,10 +1,20 @@
 ---
-description: 本文使用的8u_65，低版本，其中提到的方法可能和高版本不适配
+pubDatetime: 2025-01-02T13:05:09Z
+modDatetime: 2025-01-02T13:10:31Z
+title: RMI反序列化触发点总结
+featured: true
+draft: false
+tags:
+  - Java
+  - 反序列化
+  - RMI
+description: RMI
 ---
 
-# RMI反序列化触发点总结
+## Table of contents
 
-本博客有点垃圾 可以看下边连接了解RMI通信原理等动态调试流程
+
+写的有点垃圾 可以看下边连接了解RMI通信原理等动态调试流程
 
 {% embed url="https://xz.aliyun.com/t/8644" %}
 
