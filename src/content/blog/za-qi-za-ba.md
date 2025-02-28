@@ -1,15 +1,4 @@
----
-pubDatetime: 2025-01-02T13:05:09Z
-modDatetime: 2025-01-02T13:10:31Z
-title: 写的不知道是什么东西
-featured: true
-draft: false
-tags:
-  - ???
-description: ???
----
-
-## Table of contents
+# 杂七杂八
 
 ## JRMP和RMI
 

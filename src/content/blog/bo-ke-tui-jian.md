@@ -1,4 +1,17 @@
-# 博客推荐
+---
+pubDatetime: 2025-01-02T13:05:09Z
+modDatetime: 2025-01-02T13:10:31Z
+title: 博客推荐
+featured: true
+draft: false
+tags:
+  - Java
+  - 反序列化
+  - 博客
+description: 复现过程中看到的好的博客
+---
+
+## Table of contents
 
 ## RMI篇
 

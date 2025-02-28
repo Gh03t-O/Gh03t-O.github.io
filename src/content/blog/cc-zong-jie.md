@@ -1,8 +1,19 @@
 ---
-description: 个人第一次接触Java反序列化是通过b站的白日梦组长（好久不更新了），强烈推荐一下
+pubDatetime: 2025-01-02T13:05:09Z
+modDatetime: 2025-01-02T13:10:31Z
+title: JavaCC链反序列化全总结
+featured: true
+draft: false
+tags:
+  - Java
+  - 反序列化
+  - 利用链
+description: CC1,CC6,CC3,CC5,CC7,CC2,CC4,利用链全总结
 ---
 
-# CC总结
+## Table of contents
+
+## CC总结
 
 了解CC之前建议从URLDNS的链子开始，简短
 
@@ -25,7 +36,7 @@ import static Ser.UnSerial.deserialize;
 
 
 
-## CC1
+### CC1
 
 CC1来说有两个版本，一个是TransformedMap，一个是LazyMap，两个版本的链子差别不大，看下方详解
 
@@ -33,11 +44,11 @@ jdk版本：8u65\
 jdk推荐下载地址：[http://www.codebaoku.com/jdk/jdk-index.html](http://www.codebaoku.com/jdk/jdk-index.html)\
 CC版本：3.2.1
 
-### TransformedMap版本
+#### TransformedMap版本
 
 涉及到Transformer修饰Map和几个Transformer
 
-#### Transformer
+##### Transformer
 
 关于Transformer是什么，大家执行了解，GPT给出的解释是 Transform 是 Commons Collections 中用于对象转换的核心概念。
 
@@ -79,7 +90,7 @@ CC版本：3.2.1
 
 
 
-#### 一个简单的利用Transformer进行命令执行的样例
+##### 一个简单的利用Transformer进行命令执行的样例
 
 ```java
 import org.apache.commons.collections.Transformer;
@@ -105,7 +116,7 @@ public class main {
 
 现在我们知道了当调用了构造的ChainedTransformer的transform可以进行RCE，那么怎么调用呢
 
-#### Transformer修饰Map
+##### Transformer修饰Map
 
 <figure><img src="../.gitbook/assets/图片 (30).png" alt=""><figcaption><p>Transformer</p></figcaption></figure>
 
@@ -126,7 +137,7 @@ TransformedMap的transformKey和transformValue的调用都是在decorate或者ma
 1. 怎么给valueTransformer赋值
 2. 寻找怎么调用checkSetValue
 
-#### 赋值valueTransformer
+##### 赋值valueTransformer
 
 查看整个类可以发现，赋值的地方在构造函数中，可是构造函数是protected状态，那就需要找到谁调用了构造函数或者使用反射调用，类中decorate对构造函数进行了调用
 
@@ -192,7 +203,7 @@ public class CC1TransformedMap {
 }
 ```
 
-### LazyMap版本
+#### LazyMap版本
 
 和上一个版本不一样的地点在于触发点不一样，上一个版本的使用的是TransformedMap.decorate
 
@@ -287,7 +298,7 @@ public class CC1LazyMap {
 
 
 
-## CC6
+### CC6
 
 因为在jdk8u71之后对漏洞点进行了修复（主要是对类AnnotationInvocationHandler的readObject方法中的触发点进行了修改）所以采用了新的触发方式
 
@@ -328,7 +339,7 @@ HashMap#readObject-Hashcode ->
 
 
 
-### payload
+#### payload
 
 ```java
 package Payload.CC;
@@ -383,7 +394,7 @@ public class CC6 {
 }
 ```
 
-## CC3
+### CC3
 
 CC3主要是更改的后半部分的Transformer部分，因为黑名单的引入，不让对部分的Transformer进行反序列化了
 
@@ -460,7 +471,7 @@ public class Evil extends AbstractTranslet {
 }
 ```
 
-### Payload
+#### Payload
 
 ```java
 package Payload.CC;
@@ -537,7 +548,7 @@ public class CC6TrAXFilter {
 
 ```
 
-## CC5
+### CC5
 
 一个新的触发LazyMap.get的方法 后边可以接正常的invokertransfromer或者类加载的transform
 
@@ -553,7 +564,7 @@ valObj其实就是val变量，具体原因等我写readObject解读
 
 构造BadAttributeValueExpException时，不能在构造方法中直接给val赋值，会被转为字符串，所以反射赋值
 
-### payload
+#### payload
 
 ```java
 package Payload.CC;
@@ -603,7 +614,7 @@ public class CC5 {
 }
 ```
 
-## CC7&#x20;
+### CC7&#x20;
 
 同CC5一样是新的触发LazyMap.get方法
 
@@ -690,7 +701,7 @@ private void readObject(java.io.ObjectInputStream s)
 
 {% embed url="https://infernity.top/2024/04/18/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-CC7%E9%93%BE/" %}
 
-## CC2
+### CC2
 
 之所以把CC2和CC4放到后边，是因为lib变了，CC2和CC4是在(老得链子 只要把包名字和类名字改好 一样能用)
 
@@ -849,7 +860,7 @@ public class CC2 {
 
 我没有通过动态调试去看为什么发生这种情况，大概猜一下就是在add的时候触发了compare导致了报错，程序停了，所以可以使用和之前一样的解决方法，在最后再把transformer放进去
 
-### Payload
+#### Payload
 
 ```java
 package Payload.CC;
@@ -897,11 +908,11 @@ public class CC2 {
 
 ```
 
-## CC4
+### CC4
 
 后边是CC3，前边是CC2，直接拼接一下
 
-### Payload
+#### Payload
 
 ```java
 package Payload.CC;
@@ -972,7 +983,7 @@ public class CC4 {
 
 
 
-## ser包代码
+### ser包代码
 
 
 
@@ -1048,6 +1059,6 @@ public class UnSerial implements Callable<Object> {
 }
 ```
 
-## 心得
+### 心得
 
 也是第一次写博客，非常欠缺书面表达，以后再改吧

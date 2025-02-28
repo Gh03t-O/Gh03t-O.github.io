@@ -1,17 +1,8 @@
 ---
-pubDatetime: 2025-01-02T13:05:09Z
-modDatetime: 2025-01-02T13:10:31Z
-title: RMI攻防历史
-featured: true
-draft: false
-tags:
-  - Java
-  - 反序列化
-  - RMI
-description: RMI
+description: 不对原理过多的动态调试讲解，主要是针对于JDK版本修复讲解
 ---
 
-## Table of contents
+# RMI攻防历史
 
 通信过程，代码动态调试博客推荐
 
