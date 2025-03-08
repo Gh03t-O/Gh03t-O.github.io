@@ -48,19 +48,20 @@ CC版本：3.2.1
 
 ##### Transformer
 
-关于Transformer是什么，大家执行了解，GPT给出的解释是 Transform 是 Commons Collections 中用于对象转换的核心概念。
+关于Transformer是什么，GPT给出的解释是 Transform 是 Commons Collections 中用于对象转换的核心概念。
 
 关于CC需要关注transform方法，整个过程中对transform方法的调用是重点
 
 1.  ```java
-    InvokerTransformer的Transform
+        InvokerTransformer的Transform
     ```
 
     ![](../../assets/gitbook/assets/24.png)
 
     关于反射的知识点就不做讲解了，执行input对象的iMethodName方法
-2.  ```java
-    ConstantTransformer
+2.  
+    ```java
+        ConstantTransformer
     ```
 
     返回iConstant
@@ -114,7 +115,7 @@ public class main {
 
 ![](../../assets/gitbook/assets/30.png)
 
-首先看一下Transformer接口，里边包含了transform方法，CC1或者说关于Transform的链子的其中一个重点就是某个方法触发了transform（至于为什么，可以看下边的transform介绍）
+首先看一下Transformer接口，里边包含了transform方法，CC1或者说关于Transform的链子的其中一个重点就是某个方法触发了transform
 
 IDEA FindUsage（因为是复现，所以直接看CC的map包中的调用）
 
