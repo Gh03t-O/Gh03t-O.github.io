@@ -1,7 +1,7 @@
 ---
 pubDatetime: 2025-03-08T13:05:09Z
 modDatetime: 2025-03-08T13:10:31Z
-title: 无脑打春秋云镜brute4road
+title: 春秋云镜brute4road
 featured: true
 draft: false
 tags:
