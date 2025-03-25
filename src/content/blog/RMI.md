@@ -13,6 +13,7 @@ description: RMI
 
 ## Table of contents
 
+## 碎碎念
 
 写的有点垃圾 可以看下边连接了解RMI通信原理等动态调试流程
 
@@ -155,7 +156,8 @@ public String[] list() throws AccessException, RemoteException {
 
 函数中newCall是为发起请求做准备，ref.invoke是真正的请求（这个ref（UnicastRef）也很有意思，具体感兴趣可以自己调一下），这里做了个readObject。var5就是从请求的返回流中读取到的，也就是注册中心返回的信息。
 
-也就是说，如果这时候客户端请求的是一个恶意的注册中心，就可以在客户端做一个反序列化，具体怎么让客户端请求注册中心，攻击注册中心所在机器接管，控制服务端的lookup参数等等。
+也就是说，如果这时候客户端请求的是一个恶意的注册中心，就可以在客户端做一个反序列化，具体怎么让客户端请求恶意注册中心；
+攻击注册中心所在机器接管，控制服务端的lookup参数等等。
 
 如果更进一步的去动态调试ref.invoke的话，他最终走到了StreamRemoteCall的executeCall
 
@@ -441,7 +443,7 @@ case TransportConstants.ExceptionalReturn:
 
 ## 服务端攻击客户端
 
-在上文中也说了，客户端会把序列化数据写进输出流，所以服务端会进行读取，我们先开写进去的序列化数据是什么
+在上文中也说了，客户端会把序列化数据写进输出流，所以服务端会进行读取，我们先看写进去的序列化数据是什么
 
 ![](../../assets/gitbook/assets/3.png)
 
